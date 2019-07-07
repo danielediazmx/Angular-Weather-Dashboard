@@ -7,20 +7,21 @@ export class WeatherService {
   constructor(private http: HttpClient) {
   }
 
-  cityID = {
+  cityID = { // citiesID, not by latitude and longitude
     Obregon: '4013704',
     Navojoa: '3995019',
     Hermosillo: '4004898',
     Nogales: '4004886'
   };
 
+  // get data from api weatherbit server
   getData(weatherForm, _this, callback) {
     let cityName = 'Obregon';
     let type = 'M';
     let cityID = this.cityID[cityName];
     let resultType = 'Celsius';
 
-    if (weatherForm != 'default') {
+    if (weatherForm != 'default') { // validates if is the initial request
       cityName = weatherForm.value.city;
       type = weatherForm.value.scale;
       cityID = this.cityID[cityName];
@@ -29,7 +30,7 @@ export class WeatherService {
     }
 
     if (cityID) {
-      this.http.get(this.apiUrl, {
+      this.http.get(this.apiUrl, { // sends get request
         params: {
           units: type,
           city_id: cityID,
@@ -37,7 +38,7 @@ export class WeatherService {
         }
       })
         .subscribe(resp => {
-          if (callback)
+          if (callback) // returns a callback if exists
             callback(resp, cityName, resultType, _this);
         });
     }

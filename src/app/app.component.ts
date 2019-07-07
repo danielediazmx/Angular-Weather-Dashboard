@@ -18,7 +18,7 @@ export class AppComponent {
   constructor(public fb: FormBuilder, private http: HttpClient) {
     this.weatherService = new WeatherService(http);
 
-    this.weatherService.getData('default', this, this.parseWeatherResponse);
+    this.weatherService.getData('default', this, this.parseWeatherResponse); // First api call
   }
 
   title = 'Weather Dashboard';
@@ -46,17 +46,19 @@ export class AppComponent {
     ];
 
     resp.data.map((weather, index) => {
-      dataPointsTemp.push({x: new Date(weather.valid_date), y: weather.temp});
-      dataPointsMin.push({x: new Date(weather.valid_date), y: weather.min_temp});
-      dataPointsMax.push({x: new Date(weather.valid_date), y: weather.max_temp});
+      dataPointsTemp.push({x: new Date(weather.valid_date), y: weather.temp}); // Adding data to temp
+      dataPointsMin.push({x: new Date(weather.valid_date), y: weather.min_temp}); // Adding data to min temp
+      dataPointsMax.push({x: new Date(weather.valid_date), y: weather.max_temp}); // Adding data to max temp
 
+      // Adding data to html table
       var date = new Date(weather.valid_date);
-      let formatted_date = `${monthNames[date.getMonth()]} ${date.getDate()} ${date.getFullYear()}`;
+      let formatted_date = `${monthNames[date.getMonth()]} ${date.getDate()} ${date.getFullYear()}`; // Parsing date
       _this.tableData.push({date: formatted_date, temperature: `${weather.temp} ${resultType}`});
     });
     _this.writeDataFromResponse(city, resultType, dataPointsTemp, dataPointsMin, dataPointsMax);
   }
 
+  // Writes canvas graph
   writeDataFromResponse(city, resultType, dataPointsTemp, dataPointsMin, dataPointsMax) {
     let chart = new CanvasJS.Chart("chartContainer", {
       exportEnabled: false,
