@@ -1,5 +1,4 @@
 import {HttpClient} from '@angular/common/http';
-import * as CanvasJS from '../../assets/canvasjs.min';
 
 export class WeatherService {
   private apiKey = 'e2bdb19a42834340895566e436f4abbe';
@@ -15,7 +14,7 @@ export class WeatherService {
     Nogales: '4004886'
   };
 
-  getData(weatherForm, callback) {
+  getData(weatherForm, _this, callback) {
     let cityName = 'Obregon';
     let type = 'M';
     let cityID = this.cityID[cityName];
@@ -38,7 +37,8 @@ export class WeatherService {
         }
       })
         .subscribe(resp => {
-          callback(resp, cityName, resultType);
+          if (callback)
+            callback(resp, cityName, resultType, _this);
         });
     }
   }
