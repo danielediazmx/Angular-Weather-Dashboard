@@ -13,22 +13,39 @@
 </header>
 <section class="container">
   <div class="col-md-4 weatherForm">
-    <form [formGroup]="weatherForm" (change)="getData()">
+    <form [formGroup]="weatherForm" (ngSubmit)="getData()">
       <div class="form-group">
         <label for="city">City</label>
-        <select class="form-control" formControlName="city" id="city" required>
-          <option>-- Select --</option>
+        <select class="form-control" formControlName="city" id="city">
           <option *ngFor="let city of cities">{{ city }}</option>
         </select>
       </div>
 
       <div class="form-group">
         <label for="scale">Scale</label>
-        <select id="scale" formControlName="scale" class="form-control" [value]='' (change)="getData()" required>
-          <option value="">-- Select --</option>
+        <select id="scale" formControlName="scale" class="form-control" (change)="getData()">
           <option value="M">Celsius</option>
           <option value="I">Fahrenheit</option>
         </select>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5>Filter by Date</h5>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label for="from_date">From Date:</label>
+            <input type="date" id="from_date" formControlName="from_date" class="form-control"/>
+          </div>
+          <div class="form-group">
+            <label for="to_date">To Date:</label>
+            <input type="date" id="to_date" formControlName="to_date" class="form-control"/>
+          </div>
+        </div>
+        <div class="panel-footer">
+          <button type="submit" class="btn btn-primary btn-block">Apply Filter</button>
+        </div>
       </div>
     </form>
   </div>

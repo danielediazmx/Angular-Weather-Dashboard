@@ -22,23 +22,25 @@ export class AppComponent {
   }
 
   title = 'Weather Dashboard';
-  cities: any = ['Obregon', 'Navojoa', 'Hermosillo', 'Nogales'];
+  cities = ['Obregon', 'Navojoa', 'Hermosillo', 'Nogales'];
   tableData = [];
 
   weatherForm = this.fb.group({
-    city: '',
-    scale: ''
+    city: 'Obregon',
+    scale: 'M',
+    from_date: '',
+    to_date: ''
   });
 
   getData() {
-    this.tableData = [{date: '2019-01-01', temperature: 'xd'}];
     this.weatherService.getData(this.weatherForm, this, this.parseWeatherResponse);
   }
 
-  parseWeatherResponse(resp, city, resultType, _this) {
+  parseWeatherResponse(resp, city, resultType, from_date, to_date, _this) {
     let dataPointsTemp = [];
     let dataPointsMin = [];
     let dataPointsMax = [];
+    let filterByDate: boolean = from_date !== "" && to_date !== "";
     _this.tableData = [];
 
     const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -46,9 +48,18 @@ export class AppComponent {
     ];
 
     resp.data.map((weather, index) => {
-      dataPointsTemp.push({x: new Date(weather.valid_date), y: weather.temp}); // Adding data to temp
-      dataPointsMin.push({x: new Date(weather.valid_date), y: weather.min_temp}); // Adding data to min temp
-      dataPointsMax.push({x: new Date(weather.valid_date), y: weather.max_temp}); // Adding data to max temp
+      const valid_date = new Date(weather.valid_date);
+      if (filterByDate) {
+        from_date = new Date(from_date);
+        to_date = new Date(to_date);
+
+        if (valid_date < from_date || valid_date > to_date) {
+          return false;
+        }
+      }
+      dataPointsTemp.push({x: valid_date, y: weather.temp}); // Adding data to temp
+      dataPointsMin.push({x: valid_date, y: weather.min_temp}); // Adding data to min temp
+      dataPointsMax.push({x: valid_date, y: weather.max_temp}); // Adding data to max temp
 
       // Adding data to html table
       var date = new Date(weather.valid_date);

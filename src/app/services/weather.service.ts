@@ -20,11 +20,15 @@ export class WeatherService {
     let type = 'M';
     let cityID = this.cityID[cityName];
     let resultType = 'Celsius';
+    let from_date = '';
+    let to_date = '';
 
     if (weatherForm != 'default') { // validates if is the initial request
       cityName = weatherForm.value.city;
       type = weatherForm.value.scale;
       cityID = this.cityID[cityName];
+      from_date = weatherForm.value.from_date;
+      to_date = weatherForm.value.to_date;
 
       if (weatherForm.value.scale === 'I') resultType = 'Fahrenheit';
     }
@@ -36,11 +40,10 @@ export class WeatherService {
           city_id: cityID,
           key: this.apiKey
         }
-      })
-        .subscribe(resp => {
-          if (callback) // returns a callback if exists
-            callback(resp, cityName, resultType, _this);
-        });
+      }).subscribe(resp => {
+        if (callback) // returns a callback if exists
+          callback(resp, cityName, resultType, from_date, to_date, _this);
+      });
     }
   }
 }
