@@ -36,11 +36,13 @@ export class AppComponent {
     this.weatherService.getData(this.weatherForm, this, this.parseWeatherResponse);
   }
 
-  parseWeatherResponse(resp, city, resultType, from_date, to_date, _this) {
+  parseWeatherResponse(resp, city, resultType, pFromDate, pToDate, _this) {
     let dataPointsTemp = [];
     let dataPointsMin = [];
     let dataPointsMax = [];
-    let filterByDate: boolean = from_date !== "" && to_date !== "";
+    let filterByDate: boolean = pFromDate !== "" && pToDate !== "";
+    let fromDate = (new Date(pFromDate).getTime() + (24 * 60 * 60)) / 1000;
+    let toDate = (new Date(pToDate).getTime() + (24 * 60 * 60) * 2) / 1000;
     _this.tableData = [];
 
     const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -48,18 +50,17 @@ export class AppComponent {
     ];
 
     resp.data.map((weather, index) => {
-      const valid_date = new Date(weather.valid_date);
-      if (filterByDate) {
-        from_date = new Date(from_date);
-        to_date = new Date(to_date);
+      let weather_date = new Date(weather.valid_date);
+      weather_date.setDate(weather_date.getDate() + 1);
 
-        if (valid_date < from_date || valid_date > to_date) {
+      if (filterByDate) {
+        if (weather.ts < fromDate || weather.ts > toDate) {
           return false;
         }
       }
-      dataPointsTemp.push({x: valid_date, y: weather.temp}); // Adding data to temp
-      dataPointsMin.push({x: valid_date, y: weather.min_temp}); // Adding data to min temp
-      dataPointsMax.push({x: valid_date, y: weather.max_temp}); // Adding data to max temp
+      dataPointsTemp.push({x: weather_date, y: weather.temp}); // Adding data to temp
+      dataPointsMin.push({x: weather_date, y: weather.min_temp}); // Adding data to min temp
+      dataPointsMax.push({x: weather_date, y: weather.max_temp}); // Adding data to max temp
 
       // Adding data to html table
       var date = new Date(weather.valid_date);
